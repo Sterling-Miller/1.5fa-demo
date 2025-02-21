@@ -1,10 +1,10 @@
 {
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "bun run next dev --turbo",
+    "build": "bun run next build",
+    "start": "bun run next start",
+    "lint": "bun run next lint"
   },
   "dependencies": {
     "@types/node": "^20.10.5",
