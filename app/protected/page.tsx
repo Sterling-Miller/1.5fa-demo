@@ -1,5 +1,5 @@
 import { auth, signOut } from 'app/auth';
-import QrCodeReader from 'app/qrReader';
+import QRScanner from 'app/qrReader';
 
 export default async function ProtectedPage() {
   let session = await auth();
@@ -9,10 +9,12 @@ export default async function ProtectedPage() {
       <div className="w-screen h-screen flex flex-col space-y-5 justify-center items-center text-white">
         You are logged in as {session?.user?.email}
         <SignOut />
-      </div>
-      <div className=''>
-          <QrCodeReader/> // TODO: Fix this component so that it scales correctly. We want it to return the result when it's scanned something.
+        <div>
+          <h1>Scan QR Code</h1>
+              <QRScanner/>
+
         </div>
+      </div>
     </div>
   );
 }
