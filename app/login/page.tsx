@@ -2,9 +2,10 @@ import Link from 'next/link';
 import { Form } from 'app/form';
 import { signIn } from 'app/auth';
 import { SubmitButton } from 'app/submit-button';
-import QRGenerator from 'app/qrGenerator';
+import QRGenerator from '@/app/login/qrGenerator';
+import { generateToken } from '../api/generateToken';
 
-export default function Login() {
+export default async function Login() {
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-gray-50">
       <div className="z-10 w-full max-w-2xl overflow-hidden rounded-2xl border border-gray-100 shadow-xl flex">
@@ -34,7 +35,7 @@ export default function Login() {
           </Form>
         </div>
         <div className="flex items-center justify-center w-1/3 bg-gray-100">
-          <QRGenerator />
+          <QRGenerator token={(await generateToken()).token} />
         </div>
       </div>
     </div>

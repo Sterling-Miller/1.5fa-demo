@@ -1,12 +1,9 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { pgTable, serial, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, serial, varchar, bigint } from 'drizzle-orm/pg-core';
 import { eq } from 'drizzle-orm';
 import postgres from 'postgres';
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 
-// Optionally, if not using email/pass login, you can
-// use the Drizzle adapter for Auth.js / NextAuth
-// https://authjs.dev/reference/adapter/drizzle
 let client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
 let db = drizzle(client);
 
@@ -48,3 +45,33 @@ async function ensureTableExists() {
 
   return table;
 }
+
+// Function to insert token into the Tokens table
+export async function insertToken(token: string) {
+  await ensureTokensTableExists();
+  await db.insert(tokensTable).values({ token });
+}
+
+// Function to ensure the Tokens table exists
+async function ensureTokensTableExists() {
+  const result = await client`
+    SELECT EXISTS (
+      SELECT FROM information_schema.tables 
+      WHERE table_schema = 'public' 
+      AND table_name = 'Tokens'
+    );`;
+
+  if (!result[0].exists) {
+    await client`
+      CREATE TABLE "Tokens" (
+        id SERIAL PRIMARY KEY,
+        token VARCHAR(64)
+      );`;
+  }
+}
+
+// Tokens table definition
+const tokensTable = pgTable('Tokens', {
+  id: serial('id').primaryKey(),
+  token: varchar('token', { length: 64 }),
+});
