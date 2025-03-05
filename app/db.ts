@@ -1,8 +1,14 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { pgTable, serial, varchar, timestamp, boolean } from 'drizzle-orm/pg-core';
-import { eq } from 'drizzle-orm';
-import postgres from 'postgres';
-import { genSaltSync, hashSync } from 'bcrypt-ts';
+import { drizzle } from "drizzle-orm/postgres-js";
+import {
+  pgTable,
+  serial,
+  varchar,
+  timestamp,
+  boolean,
+} from "drizzle-orm/pg-core";
+import { eq } from "drizzle-orm";
+import postgres from "postgres";
+import { genSaltSync, hashSync } from "bcrypt-ts";
 
 let client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
 let db = drizzle(client);
@@ -37,17 +43,22 @@ async function ensureTableExists() {
       );`;
   }
 
-  const table = pgTable('User', {
-    id: serial('id').primaryKey(),
-    email: varchar('email', { length: 64 }),
-    password: varchar('password', { length: 64 }),
+  const table = pgTable("User", {
+    id: serial("id").primaryKey(),
+    email: varchar("email", { length: 64 }),
+    password: varchar("password", { length: 64 }),
   });
 
   return table;
 }
 
 // Function to insert token into the Tokens table
-export async function insertToken(token: string, createdat: Date, expiresat: Date, used: boolean) {
+export async function insertToken(
+  token: string,
+  createdat: Date,
+  expiresat: Date,
+  used: boolean
+) {
   await ensureTokensTableExists();
   await db.insert(tokensTable).values({ token, createdat, expiresat, used });
 }
@@ -74,10 +85,10 @@ async function ensureTokensTableExists() {
 }
 
 // Tokens table definition
-const tokensTable = pgTable('Tokens', {
-  id: serial('id').primaryKey(),
-  token: varchar('token', { length: 64 }),
-  createdat: timestamp('createdat'),
-  expiresat: timestamp('expiresat'),
-  used: boolean('used'),
+const tokensTable = pgTable("Tokens", {
+  id: serial("id").primaryKey(),
+  token: varchar("token", { length: 64 }),
+  createdat: timestamp("createdat"),
+  expiresat: timestamp("expiresat"),
+  used: boolean("used"),
 });
