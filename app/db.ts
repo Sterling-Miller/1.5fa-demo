@@ -1,5 +1,5 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { pgTable, serial, varchar, bigint } from 'drizzle-orm/pg-core';
+import { pgTable, serial, varchar, timestamp, boolean } from 'drizzle-orm/pg-core';
 import { eq } from 'drizzle-orm';
 import postgres from 'postgres';
 import { genSaltSync, hashSync } from 'bcrypt-ts';
@@ -47,9 +47,9 @@ async function ensureTableExists() {
 }
 
 // Function to insert token into the Tokens table
-export async function insertToken(token: string) {
+export async function insertToken(token: string, createdat: Date, expiresat: Date, used: boolean) {
   await ensureTokensTableExists();
-  await db.insert(tokensTable).values({ token });
+  await db.insert(tokensTable).values({ token, createdat, expiresat, used });
 }
 
 // Function to ensure the Tokens table exists
@@ -65,7 +65,10 @@ async function ensureTokensTableExists() {
     await client`
       CREATE TABLE "Tokens" (
         id SERIAL PRIMARY KEY,
-        token VARCHAR(64)
+        token VARCHAR(64),
+        createdat TIMESTAMP,
+        expiresat TIMESTAMP,
+        used BOOLEAN
       );`;
   }
 }
@@ -74,4 +77,7 @@ async function ensureTokensTableExists() {
 const tokensTable = pgTable('Tokens', {
   id: serial('id').primaryKey(),
   token: varchar('token', { length: 64 }),
+  createdat: timestamp('createdat'),
+  expiresat: timestamp('expiresat'),
+  used: boolean('used'),
 });
