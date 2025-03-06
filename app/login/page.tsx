@@ -5,6 +5,7 @@ import { SubmitButton } from "app/submit-button";
 import QRGenerator from "@/app/login/qrGenerator";
 import { useEffect, useState } from "react";
 import { handleSignIn } from "./serverActions";
+import getBrowserInfo from "./getBrowserInfo";
 
 export default function Login() {
   const [token, setToken] = useState<string | null>(null);
@@ -12,8 +13,13 @@ export default function Login() {
   useEffect(() => {
     async function fetchToken() {
       try {
+        const { browser, os } = await getBrowserInfo();
         const response = await fetch("/api/generatetoken", {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ browser, os }),
         });
         const data = await response.json();
         setToken(data.token);

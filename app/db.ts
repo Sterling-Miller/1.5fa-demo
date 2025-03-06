@@ -57,10 +57,12 @@ export async function insertToken(
   token: string,
   createdat: Date,
   expiresat: Date,
-  used: boolean
+  used: boolean,
+  browser: string,
+  os: string
 ) {
   await ensureTokensTableExists();
-  await db.insert(tokensTable).values({ token, createdat, expiresat, used });
+  await db.insert(tokensTable).values({ token, createdat, expiresat, used, browser, os });
 }
 
 // Function to ensure the Tokens table exists
@@ -79,7 +81,9 @@ async function ensureTokensTableExists() {
         token VARCHAR(64),
         createdat TIMESTAMP,
         expiresat TIMESTAMP,
-        used BOOLEAN
+        used BOOLEAN,
+        browser VARCHAR(10),
+        os VARCHAR(10)
       );`;
   }
 }
@@ -91,4 +95,6 @@ const tokensTable = pgTable("Tokens", {
   createdat: timestamp("createdat"),
   expiresat: timestamp("expiresat"),
   used: boolean("used"),
+  browser: varchar("browser", { length: 10 }),
+  os: varchar("os", { length: 10 }),
 });
