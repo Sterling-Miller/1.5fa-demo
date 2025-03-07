@@ -26,17 +26,14 @@ const QRScanner = () => {
       <h1 className="text-4xl font-bold text-white mb-8 mt-20">Scan the QR Code</h1>
       
       <div className="w-full max-w-md space-y-4">
-        <select
+        <select 
           onChange={(e) => setSelected(e.target.value)}
           className="w-full p-2 border border-slate-700 rounded-lg bg-white shadow-sm"
-          value={selected}
+          defaultValue={"environment"}
         >
-          <option value="environment" className="text-gray-800">
-            Rear Camera
-          </option>
-          <option value="user" className="text-gray-800">
-            Front Camera
-          </option>
+          {/* <option value="" disabled selected className="text-gray-800">Select a camera</option> */}
+          <option value={"environment"} className="text-gray-800">Rear Camera</option>
+          <option value={"user"} className="text-gray-800">Front Camera</option>
         </select>
       </div>
       
