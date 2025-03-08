@@ -62,6 +62,7 @@ export async function insertToken(
   os: string
 ) {
   await ensureTokensTableExists();
+  console.log("Token inserted:", { token, createdat, expiresat, used, browser, os });
   await db.insert(tokensTable).values({ token, createdat, expiresat, used, browser, os });
 }
 
@@ -98,3 +99,30 @@ const tokensTable = pgTable("Tokens", {
   browser: varchar("browser", { length: 10 }),
   os: varchar("os", { length: 10 }),
 });
+
+
+// Stub functions for database token operations
+
+export async function getTokenByValue(token: string) {
+  await ensureTokensTableExists();
+  try {
+    const result = await db.select().from(tokensTable).where(eq(tokensTable.token, token));
+    console.log("Fetching token:", token);
+    if (result.length > 0) {
+      return result[0];
+    } else {
+      console.error("Token not found:", token);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching token:", error);
+    throw new Error("Failed to fetch token");
+  }
+}
+
+export async function markTokenAsUsed(token: string) {
+  // Update token status in database (replace with actual DB update)
+  await ensureTokensTableExists();
+  await db.update(tokensTable).set({ used: true }).where(eq(tokensTable.token, token));
+  console.log("Token marked as used:", token);
+}

@@ -6,30 +6,47 @@ import QRGenerator from "@/app/login/qrGenerator";
 import { useEffect, useState } from "react";
 import { handleSignIn } from "./serverActions";
 import getBrowserInfo from "./getBrowserInfo";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:3001");
 
 export default function Login() {
   const [token, setToken] = useState<string | null>(null);
+  const [triggered, setTriggered] = useState(false);
 
   useEffect(() => {
-    async function fetchToken() {
-      try {
-        const { browser, os } = await getBrowserInfo();
-        const response = await fetch("/api/generatetoken", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ browser, os }),
-        });
-        const data = await response.json();
-        setToken(data.token);
-      } catch (error) {
-        console.error("Error fetching token:", error);
-      }
-    }
-
+    // Generate Token
     fetchToken();
+
+    // Listen for tokenUsed event
+    socket.on("tokenUsed", (data) => {
+      if (data.token === token) {
+        setTriggered(true);
+      }
+    });
+
+    return () => {
+      socket.off("tokenUsed");
+    };
   }, []);
+
+  async function fetchToken() {
+    try {
+      const { browser, os } = await getBrowserInfo();
+      const response = await fetch("/api/generatetoken", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ browser, os }),
+      });
+      const data = await response.json();
+      setToken(data.token);
+      console.log("Token generated:", data.token);
+    } catch (error) {
+      console.error("Error fetching token:", error);
+    }
+  }
 
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-gray-50">
