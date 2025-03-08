@@ -62,7 +62,18 @@ export async function insertToken(
   os: string
 ) {
   await ensureTokensTableExists();
-  await db.insert(tokensTable).values({ token, createdat, expiresat, used, browser, os });
+  await db
+    .insert(tokensTable)
+    .values({ token, createdat, expiresat, used, browser, os });
+}
+
+// Function to update when a token is used in the Tokens table
+export async function updateTokenStatus(token: string, status: boolean) {
+  await ensureTokensTableExists();
+  await db
+    .update(tokensTable)
+    .set({ used: status === true })
+    .where(eq(tokensTable.token, token));
 }
 
 // Function to ensure the Tokens table exists

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { randomBytes } from "crypto";
-import { insertToken } from "../../db";
+import { insertToken } from "@/app/db";
 
 export async function POST(req: Request) {
   try {
@@ -14,8 +14,7 @@ export async function POST(req: Request) {
 
     await insertToken(token, createdAt, expiresAt, used, browser, os);
 
-    return NextResponse.json({ token });
-
+    return NextResponse.json({ token, used: false, type: "token" });
   } catch (error) {
     console.error("Error generating token:", error);
     throw new Error("Token generation failed");

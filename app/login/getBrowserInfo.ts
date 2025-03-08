@@ -1,5 +1,4 @@
-// Desc: Get the browser, OS, and region information of the user
-
+// Code to get the browser and OS information of the user
 export default async function getBrowserInfo() {
   const userAgent = navigator.userAgent;
   let browser = "Unknown";

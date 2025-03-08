@@ -9,12 +9,13 @@ import getBrowserInfo from "./getBrowserInfo";
 
 export default function Login() {
   const [token, setToken] = useState<string | null>(null);
+  const [tokenStatus, setTokenStatus] = useState<string>("unused");
 
   useEffect(() => {
     async function fetchToken() {
       try {
         const { browser, os } = await getBrowserInfo();
-        const response = await fetch("/api/generatetoken", {
+        const response = await fetch("/api/token/generate-token", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -23,6 +24,8 @@ export default function Login() {
         });
         const data = await response.json();
         setToken(data.token);
+        setTokenStatus("unused");
+        
       } catch (error) {
         console.error("Error fetching token:", error);
       }
@@ -51,7 +54,7 @@ export default function Login() {
           </Form>
         </div>
         <div className="flex items-center justify-center w-1/3 bg-gray-100">
-          {token ? <QRGenerator token={token} /> : <p>Loading...</p>}
+          {!token ? <p>Loading...</p> : <QRGenerator token={token} />}
         </div>
       </div>
     </div>
