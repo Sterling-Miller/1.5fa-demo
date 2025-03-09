@@ -64,6 +64,7 @@ export default function Login() {
       }
     } else {
       setMessage(data.error || "Invalid verification code.");
+      setCode("");
     }
   }
 
@@ -103,6 +104,8 @@ export default function Login() {
                 onChange={(e) => setCode(e.target.value)}
                 required
               />
+              {/* Display the error message inside the popup */}
+              {message && <p className="text-red-500 mt-2">{message}</p>} 
               <div className="mt-4 flex justify-between">
                 <button onClick={verifyCode} className="border p-2 rounded w-1/2 mr-2">Verify</button>
                 <button onClick={() => setIsPopupOpen(false)} className="border p-2 rounded w-1/2">Cancel</button>
