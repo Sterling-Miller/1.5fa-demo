@@ -20,11 +20,12 @@ export default function VerifyToken() {
     
     // If token is valid, activate it with the current user
     if (data.success) {
-        const user = session?.user?.email;
+        const useremail = session?.user?.email;
+        console.log("useremail passed to activate token: ", useremail);
         const res = await fetch("/api/activatetoken", {
           method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ token: inputToken, useremail: session?.user?.email }),
+            body: JSON.stringify({ token: inputToken, useremail: useremail }),
         });
         const data = await res.json();
         console.log("activate token response: ", data);

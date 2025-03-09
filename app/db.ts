@@ -71,6 +71,13 @@ export async function insertToken(
   await db.insert(tokensTable).values({ token, createdat, expiresat, activated, used, useremail, browser, os });
 }
 
+// Function to get all the data from a token in the Tokens table
+export async function getTokenData(token: string) {
+  await ensureTokensTableExists();
+  return await db.select().from(tokensTable).where(eq(tokensTable.token, token));
+}
+
+
 // Function to "activate" a token in the Tokens table
 export async function activateToken(token: string, useremail: string) {
   // Update the activated field to true and set the user to the provided user

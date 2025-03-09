@@ -3,16 +3,16 @@ import { activateToken } from "../../db";
 
 export async function POST(req: Request) {
   try {
-    const { token, user } = await req.json();
+    const { token, useremail } = await req.json();
 
     // Check if token and user email are provided
-    if (token === undefined || user === undefined) {
+    if (token === undefined || useremail === undefined) {
       throw new Error("Token and user email are required");
     }
 
-    await activateToken(token, user);
+    await activateToken(token, useremail);
 
-    return NextResponse.json({ user });
+    return NextResponse.json({ useremail });
 
   } catch (error) {
     console.error("Error activating token:", error);

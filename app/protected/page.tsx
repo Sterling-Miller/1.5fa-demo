@@ -10,9 +10,9 @@ export default async function ProtectedPage() {
       <div className="w-screen h-screen flex flex-col space-y-5 justify-center items-center text-white">
         You are logged in as {session?.user?.email}
         <SignOut />
-        {/* <SessionProvider session={session}>
+        <SessionProvider session={session}>
           <VerifyToken />
-        </SessionProvider> */}
+        </SessionProvider>
       </div>
     </div>
   );
