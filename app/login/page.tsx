@@ -23,6 +23,7 @@ export default function Login() {
         });
         const data = await response.json();
         setToken(data.token);
+        console.log("Token:", data.token); // TODO: Cleanup
       } catch (error) {
         console.error("Error fetching token:", error);
       }
