@@ -1,4 +1,6 @@
 import { auth, signOut } from 'app/auth';
+import VerifyToken from './verifyToken';
+import { SessionProvider } from 'next-auth/react';
 
 export default async function ProtectedPage() {
   let session = await auth();
@@ -8,6 +10,9 @@ export default async function ProtectedPage() {
       <div className="w-screen h-screen flex flex-col space-y-5 justify-center items-center text-white">
         You are logged in as {session?.user?.email}
         <SignOut />
+        {/* <SessionProvider session={session}>
+          <VerifyToken />
+        </SessionProvider> */}
       </div>
     </div>
   );

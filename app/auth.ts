@@ -2,7 +2,7 @@ import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { compare } from 'bcrypt-ts';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { getUser } from 'app/db';
+import { getUser, getEmailFromToken } from 'app/db';
 import { authConfig } from 'app/auth.config';
 
 export const {
@@ -31,15 +31,16 @@ export const {
         if (!ephemeralToken) return null;
 
         // Look up which code record has this ephemeralToken
-        // const record = await getETokenUser(ephemeralToken);
-        const record = null // testing code
-        if (!record) return null;
+        const tokenUserEmail = await getEmailFromToken(ephemeralToken);
 
-        // Build a user object for NextAuth
-        return {
-          id: record.userId || '',
-          email: record.userEmail || '',
-        };
+        // If no record found, return null
+        if (!tokenUserEmail) return null;
+
+        let user = await getUser(tokenUserEmail);
+        if (!user) return null;
+
+        // Return the user object if the token is valid
+        return user[0] as any;
       },
     }),
   ],

@@ -87,6 +87,13 @@ export async function verifyToken(token: string) {
   return tokens.length > 0;
 }
 
+// Function to get the email from a token in the Tokens table
+export async function getEmailFromToken(token: string) {
+  await ensureTokensTableExists();
+  const tokens = await db.select().from(tokensTable).where(eq(tokensTable.token, token));
+  return tokens.length > 0 ? tokens[0].useremail : null;
+}
+
 // Function to delete a token from the Tokens table
 export async function deleteToken(token: string) {
   await ensureTokensTableExists();
