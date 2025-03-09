@@ -6,6 +6,7 @@ import QRGenerator from "@/app/login/qrGenerator";
 import { useEffect, useState } from "react";
 import { handleSignIn } from "./serverActions";
 import getBrowserInfo from "./getBrowserInfo";
+import CheckActivation from "./checkActivation";
 
 export default function Login() {
   const [token, setToken] = useState<string | null>(null);
@@ -53,6 +54,7 @@ export default function Login() {
         </div>
         <div className="flex items-center justify-center w-1/3 bg-gray-100">
           {token ? <QRGenerator token={token} /> : <p>Loading...</p>}
+          {token ? <CheckActivation token={token} /> : <p>Loading!?!</p>}
         </div>
       </div>
     </div>

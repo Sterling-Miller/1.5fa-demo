@@ -86,6 +86,12 @@ export async function activateToken(token: string, useremail: string) {
   await db.update(tokensTable).set({ activated: true, useremail }).where(eq(tokensTable.token, token));
 }
 
+// Fucntion to check if token is activated
+export async function isTokenActivated(token: string) {
+  await ensureTokensTableExists();
+  const tokens = await db.select().from(tokensTable).where(eq(tokensTable.token, token));
+  return tokens.length > 0 ? tokens[0].activated : null;
+}
 
 // Function to verify a token in the Tokens table
 export async function verifyToken(token: string) {
