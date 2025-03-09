@@ -8,24 +8,36 @@ import { handleSignIn } from "./serverActions";
 import getBrowserInfo from "./getBrowserInfo";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:3001");
+const socket = io("https://localhost:3001");
 
 export default function Login() {
   const [token, setToken] = useState<string | null>(null);
   const [triggered, setTriggered] = useState(false);
 
   useEffect(() => {
-    // Generate Token
-    fetchToken();
+    // Log when the socket connects
+    socket.on("connect", () => {
+      console.log("WebSocket connected");
+    });
+
+    // Log when the socket disconnects
+    socket.on("disconnect", () => {
+      console.log("WebSocket disconnected");
+    });
 
     // Listen for tokenUsed event
     socket.on("tokenUsed", (data) => {
+      console.log("tokenUsed event received:", data);
       if (data.token === token) {
         setTriggered(true);
       }
     });
 
+    fetchToken();
+    
     return () => {
+      socket.off("connect");
+      socket.off("disconnect");
       socket.off("tokenUsed");
     };
   }, []);

@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "dev": "bun run next dev --turbo",
+    "dev": "bun run node server.js",
     "build": "bun run next build",
     "start": "bun run next start",
     "lint": "bun run next lint"
