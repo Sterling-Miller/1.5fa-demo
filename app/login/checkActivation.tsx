@@ -24,6 +24,9 @@ export default function CheckActivation({ token }: { token: string }) {
             }
         }
 
+        // Jank but way easier than websockets
+        // TODO: Improve error checking + handling (ie. stop checking after valid)
+        // TODO: Make this start login process if token is activated
         function startChecking() {
             intervalId = window.setInterval(() => {
                 setTimeElapsed((prev) => prev + 5);

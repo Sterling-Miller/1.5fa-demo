@@ -8,3 +8,5 @@ export async function handleSignIn(formData: FormData) {
     password: formData.get("password") as string,
   });
 }
+
+// TODO: Add handleSignIn for qr token
