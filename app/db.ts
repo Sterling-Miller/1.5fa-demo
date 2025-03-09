@@ -98,3 +98,12 @@ const tokensTable = pgTable("Tokens", {
   browser: varchar("browser", { length: 10 }),
   os: varchar("os", { length: 10 }),
 });
+
+
+
+
+// add to env.local at the bottom
+
+//USER_EMAIL=your-email@example.com
+//USER_PASS=your-secure-password
+//RESEND_API_KEY=re_S2SyejmH_PxfmPEMPTbX95PN5bTzpAxms

@@ -1,9 +1,9 @@
 "use server";
-import { signIn } from "app/auth";
+import { signIn } from "next-auth/react";
 
 export async function handleSignIn(formData: FormData) {
   await signIn("credentials", {
-    redirectTo: "/protected",
+    redirect: false,
     email: formData.get("email") as string,
     password: formData.get("password") as string,
   });
