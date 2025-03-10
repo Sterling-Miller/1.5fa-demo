@@ -8,25 +8,30 @@ export default function VerifyToken() {
   const { data: session } = useSession();
 
   const verifyToken = async () => {
-    const res = await fetch("/api/verifytoken", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token: inputToken }),
-    });
-    const data = await res.json();
-    setMessage(data.success ? "Token verified!" : "Invalid or used token");
-
-    // If token is valid, activate it with the current user
-    if (data.success) {
-      const useremail = session?.user?.email;
-      console.log("useremail passed to activate token: ", useremail);
-      const res = await fetch("/api/activatetoken", {
+    try {
+      const res = await fetch("/api/verifytoken", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: inputToken, useremail: useremail }),
+        body: JSON.stringify({ token: inputToken }),
       });
       const data = await res.json();
-      console.log("activate token response: ", data);
+      setMessage(data.success ? "Token verified!" : "Invalid or used token");
+
+      if (data.success) {
+        const useremail = session?.user?.email;
+        console.log("useremail passed to activate token: ", useremail);
+        const res = await fetch("/api/activatetoken", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: inputToken, useremail: useremail }),
+        });
+        const data = await res.json();
+        console.log("activate token response: ", data);
+      }
+      
+    } catch (error) {
+      console.error("Error verifying token:", error);
+      setMessage("An error occurred while verifying the token.");
     }
   };
 

@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { compare } from "bcrypt-ts";
-import { getUser, getEmailFromToken, markTokenAsUsed } from "app/db";
+import { getUser, markTokenAsUsed, getTokenData } from "app/db";
 import { authConfig } from "app/auth.config";
 
 export const {
@@ -27,19 +27,19 @@ export const {
       async authorize({ ephemeralToken }: any) {
         if (!ephemeralToken) return null;
 
-        // Look up which code record has this ephemeralToken
-        const tokenUserEmail = await getEmailFromToken(ephemeralToken);
+        const tokenDataArray = await getTokenData(ephemeralToken);
+        const tokenData = tokenDataArray[0];
 
-        // If no record found or email does not match, return null
+        if (!tokenData || tokenData.used || !tokenData.expiresat || tokenData.expiresat < new Date()) return null;
+
+        const tokenUserEmail = tokenData.useremail;
         if (!tokenUserEmail) return null;
 
         let user = await getUser(tokenUserEmail);
         if (!user) return null;
 
-        // Mark token as used
         await markTokenAsUsed(ephemeralToken);
 
-        // Return the user object if the token is valid
         return user[0] as any;
       },
     }),

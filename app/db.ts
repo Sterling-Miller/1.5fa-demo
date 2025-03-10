@@ -132,7 +132,7 @@ async function ensureTokensTableExists() {
     await client`
       CREATE TABLE "Tokens" (
         id SERIAL PRIMARY KEY,
-        token VARCHAR(64),
+        token VARCHAR(64) UNIQUE,
         createdat TIMESTAMP,
         expiresat TIMESTAMP,
         activated BOOLEAN,
@@ -147,7 +147,7 @@ async function ensureTokensTableExists() {
 // Tokens table definition
 const tokensTable = pgTable("Tokens", {
   id: serial("id").primaryKey(),
-  token: varchar("token", { length: 64 }),
+  token: varchar("token", { length: 64 }).unique(),
   createdat: timestamp("createdat"),
   expiresat: timestamp("expiresat"),
   activated: boolean("activated"),

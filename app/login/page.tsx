@@ -54,16 +54,7 @@ export default function Login() {
         </div>
         <div className="flex items-center justify-center w-1/3 bg-gray-100">
           {token ? <QRGenerator token={token} /> : <p>Loading...</p>}
-          {token ? (
-            <CheckActivation
-              token={token}
-              onTokenActivated={async () => {
-                await handleSignInWithToken(token);
-              }}
-            />
-          ) : (
-            <p>Loading!?!</p>
-          )}
+          {token && ( <CheckActivation token={token} onTokenActivated={async () => { await handleSignInWithToken(token); }} /> )}
         </div>
       </div>
     </div>

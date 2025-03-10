@@ -15,8 +15,8 @@ export default function CheckActivation({ token, onTokenActivated }: { token: st
         const tokenDataArray = await getTokenData(token);
         const tokenData = tokenDataArray[0];
 
-        if (!tokenData || tokenData.used) {
-            return console.error("Token not found in database or already used");
+        if (!tokenData || tokenData.used || !tokenData.expiresat || tokenData.expiresat < new Date()) {
+            return console.error("Token not found, already used, or expired");
         }
 
         if (tokenData.activated) {
