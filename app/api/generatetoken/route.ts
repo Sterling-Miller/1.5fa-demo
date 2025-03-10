@@ -6,7 +6,7 @@ export async function POST(req: Request) {
   try {
     const { browser, os } = await req.json();
 
-    // Generate a secure random token
+    // Generate a secure pseudo-random token
     const token = randomBytes(32).toString("hex");
     const createdAt = new Date();
     const expiresAt = new Date(createdAt.getTime() + 2 * 60 * 1000); // Token expires in 2 minutes
