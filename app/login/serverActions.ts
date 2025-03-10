@@ -1,5 +1,6 @@
 "use server";
 import { signIn } from "app/auth";
+import { getEmailFromToken } from "../db";
 
 export async function handleSignIn(formData: FormData) {
   await signIn("credentials", {
@@ -10,3 +11,10 @@ export async function handleSignIn(formData: FormData) {
 }
 
 // TODO: Add handleSignIn for qr token
+export async function handleSignInWithToken(token: string) {
+  await signIn("qr-token", {
+    redirectTo: "/protected",
+    email: await getEmailFromToken(token),
+    ephemeralToken: token,
+  });
+}

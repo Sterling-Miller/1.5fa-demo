@@ -77,6 +77,18 @@ export async function getTokenData(token: string) {
   return await db.select().from(tokensTable).where(eq(tokensTable.token, token));
 }
 
+// Function to get the email from a token in the Tokens table
+export async function getEmailFromToken(token: string) {
+  await ensureTokensTableExists();
+  const tokens = await db.select().from(tokensTable).where(eq(tokensTable.token, token));
+  return tokens.length > 0 ? tokens[0].useremail : null;
+}
+
+// Function to delete a token from the Tokens table
+export async function deleteToken(token: string) {
+  await ensureTokensTableExists();
+  await db.delete(tokensTable).where(eq(tokensTable.token, token));
+}
 
 // Function to "activate" a token in the Tokens table
 export async function activateToken(token: string, useremail: string) {
@@ -100,17 +112,10 @@ export async function verifyToken(token: string) {
   return tokens.length > 0;
 }
 
-// Function to get the email from a token in the Tokens table
-export async function getEmailFromToken(token: string) {
+// Function to mark a token as used
+export async function markTokenAsUsed(token: string) {
   await ensureTokensTableExists();
-  const tokens = await db.select().from(tokensTable).where(eq(tokensTable.token, token));
-  return tokens.length > 0 ? tokens[0].useremail : null;
-}
-
-// Function to delete a token from the Tokens table
-export async function deleteToken(token: string) {
-  await ensureTokensTableExists();
-  await db.delete(tokensTable).where(eq(tokensTable.token, token));
+  await db.update(tokensTable).set({ used: true }).where(eq(tokensTable.token, token));
 }
 
 // Function to ensure the Tokens table exists

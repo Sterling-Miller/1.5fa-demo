@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { verifyToken, getTokenData } from "../../db";
+import { verifyToken, getTokenData, markTokenAsUsed } from "../../db";
 
 export async function POST(req: Request) {
   try {
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     }
 
     // Mark token as used
-    // await markTokenAsUsed(token);
+    await markTokenAsUsed(token);
 
     // Check that token exists
     await verifyToken(token);

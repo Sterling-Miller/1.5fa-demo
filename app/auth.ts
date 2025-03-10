@@ -14,6 +14,7 @@ export const {
   ...authConfig,
   providers: [
     Credentials({
+      id: 'credentials',
       async authorize({ email, password }: any) {
         let user = await getUser(email);
         if (user.length === 0) return null;
@@ -21,21 +22,17 @@ export const {
         if (passwordsMatch) return user[0] as any;
       },
     }),
-    // TODO: Fix this provider and make it work
-    CredentialsProvider({
-      name: 'EphemeralTokenLogin',
-      credentials: {
-        ephemeralToken: { label: 'Ephemeral Token', type: 'text' },
-      },
-      async authorize(credentials, req) {
-        const ephemeralToken = typeof credentials?.ephemeralToken === 'string' ? credentials.ephemeralToken.trim() : null;
-        if (!ephemeralToken) return null;
+
+    Credentials({
+      id: 'qr-token',
+      async authorize({ email, ephemeralToken }: any) {
+        if (!ephemeralToken || !email) return null;
 
         // Look up which code record has this ephemeralToken
         const tokenUserEmail = await getEmailFromToken(ephemeralToken);
 
-        // If no record found, return null
-        if (!tokenUserEmail) return null;
+        // If no record found or email does not match, return null
+        if (!tokenUserEmail || tokenUserEmail !== email) return null;
 
         let user = await getUser(tokenUserEmail);
         if (!user) return null;
