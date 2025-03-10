@@ -1,6 +1,6 @@
 'use client'
 import { useState } from "react";
-import QrReader from "modern-react-qr-reader"; 
+import QrScanner from "modern-react-qr-reader"; 
 // Sourse Inspo: https://codesandbox.io/p/sandbox/qrscanner-854b39?file=%2Fsrc%2FApp.js%3A3%2C1-4%2C1
 
 const QRScanner = () => {
@@ -8,10 +8,10 @@ const QRScanner = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [precScan, setPrecScan] = useState("");
-  const [selected, setSelected] = useState("environment");
+  const [selected, setSelected] = useState<'environment' | 'user'>("environment");
 
-  const handleScan = (scanData: string) => { // maybe not string
-    if (scanData && scanData) {
+  const handleScan = (scanData: string | null) => { // maybe not string
+    if (scanData) {
       // window.location.href = scanData;
       console.log(scanData); // Here is our scanned data!
     }
@@ -27,7 +27,7 @@ const QRScanner = () => {
       
       <div className="w-full max-w-md space-y-4">
         <select 
-          onChange={(e) => setSelected(e.target.value)}
+          onChange={(e) => setSelected(e.target.value as 'environment' | 'user')}
           className="w-full p-2 border border-slate-700 rounded-lg bg-white shadow-sm"
           defaultValue={"environment"}
         >
@@ -38,12 +38,12 @@ const QRScanner = () => {
       </div>
       
       {!showDialog && !processing && (
-        <QrReader
+        <QrScanner
           facingMode={selected}
           delay={500}
           onScan={handleScan}
           onError={handleError}
-          className="qr-reader w-[40vw] mt-20 bg-slate-300"
+          style={{ width: '40vw', marginTop: '20px', backgroundColor: 'slate-300' }}
         />
       )}
     </div>
