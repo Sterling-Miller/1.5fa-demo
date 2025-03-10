@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { verifyToken, getTokenData, markTokenAsUsed } from "../../db";
+import { verifyToken, getTokenData } from "../../db";
 
 export async function POST(req: Request) {
   try {
@@ -12,11 +12,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: "Invalid or expired token" }, { status: 400 });
     }
 
-    // Mark token as used
-    await markTokenAsUsed(token);
-
     // Check that token exists
-    await verifyToken(token);
+    if (await verifyToken(token) === false) {
+      return NextResponse.json({ success: false, message: "Invalid token" }, { status: 400 });
+    }
 
     return NextResponse.json({ success: true });
 
