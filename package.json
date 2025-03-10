@@ -22,7 +22,7 @@
     "resend": "^4.1.2",
     "@yudiel/react-qr-scanner": "^2.2.1",
     "modern-react-qr-reader": "^1.0.12",
-    "next": "^15.1.7",
+    "next": "^15.1.7"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",

@@ -1,6 +1,7 @@
 'use client'
 import { useState } from "react";
 import QrScanner from "modern-react-qr-reader"; 
+import verifyToken from "./protected/verifyToken";
 // Sourse Inspo: https://codesandbox.io/p/sandbox/qrscanner-854b39?file=%2Fsrc%2FApp.js%3A3%2C1-4%2C1
 
 const QRScanner = () => {
@@ -10,10 +11,11 @@ const QRScanner = () => {
   const [precScan, setPrecScan] = useState("");
   const [selected, setSelected] = useState<'environment' | 'user'>("environment");
 
-  const handleScan = (scanData: string | null) => { // maybe not string
+  const handleScan = async (scanData: string | null) => {
     if (scanData) {
-      // window.location.href = scanData;
-      console.log(scanData); // Here is our scanned data!
+      setProcessing(true);
+      await verifyToken(scanData);
+      setProcessing(false);
     }
   };
   
@@ -31,7 +33,6 @@ const QRScanner = () => {
           className="w-full p-2 border border-slate-700 rounded-lg bg-white shadow-sm"
           defaultValue={"environment"}
         >
-          {/* <option value="" disabled selected className="text-gray-800">Select a camera</option> */}
           <option value={"environment"} className="text-gray-800">Rear Camera</option>
           <option value={"user"} className="text-gray-800">Front Camera</option>
         </select>
