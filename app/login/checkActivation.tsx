@@ -34,9 +34,9 @@ export default function CheckActivation({ token, onTokenActivated }: { token: st
 
     function startChecking() {
       intervalId = window.setInterval(() => {
-        setTimeElapsed((prev) => prev + 5);
+        setTimeElapsed((prev) => prev + 1);
         checkToken();
-      }, 5000);
+      }, 1000);
 
       timeoutId = window.setTimeout(() => {
         clearInterval(intervalId);
