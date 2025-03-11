@@ -1,3 +1,4 @@
+"use server";
 import { drizzle } from "drizzle-orm/postgres-js";
 import {
   pgTable,
@@ -13,11 +14,13 @@ import { genSaltSync, hashSync } from "bcrypt-ts";
 let client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
 let db = drizzle(client);
 
+// Function to get user from the User table
 export async function getUser(email: string) {
   const users = await ensureTableExists();
   return await db.select().from(users).where(eq(users.email, email));
 }
 
+// Function to create a user in the User table
 export async function createUser(email: string, password: string) {
   const users = await ensureTableExists();
   let salt = genSaltSync(10);
@@ -57,12 +60,62 @@ export async function insertToken(
   token: string,
   createdat: Date,
   expiresat: Date,
+  activated: boolean,
   used: boolean,
+  useremail: string,
   browser: string,
   os: string
 ) {
   await ensureTokensTableExists();
-  await db.insert(tokensTable).values({ token, createdat, expiresat, used, browser, os });
+  console.log("Tokens table exists");
+  await db.insert(tokensTable).values({ token, createdat, expiresat, activated, used, useremail, browser, os });
+}
+
+// Function to get all the data from a token in the Tokens table
+export async function getTokenData(token: string) {
+  await ensureTokensTableExists();
+  return await db.select().from(tokensTable).where(eq(tokensTable.token, token));
+}
+
+// Function to get the email from a token in the Tokens table
+export async function getEmailFromToken(token: string) {
+  await ensureTokensTableExists();
+  const tokens = await db.select().from(tokensTable).where(eq(tokensTable.token, token));
+  return tokens.length > 0 ? tokens[0].useremail : null;
+}
+
+// Function to delete a token from the Tokens table
+export async function deleteToken(token: string) {
+  await ensureTokensTableExists();
+  await db.delete(tokensTable).where(eq(tokensTable.token, token));
+}
+
+// Function to "activate" a token in the Tokens table
+export async function activateToken(token: string, useremail: string) {
+  // Update the activated field to true and set the user to the provided user
+  await ensureTokensTableExists();
+  await verifyToken(token);
+  await db.update(tokensTable).set({ activated: true, useremail }).where(eq(tokensTable.token, token));
+}
+
+// Fucntion to check if token is activated
+export async function isTokenActivated(token: string) {
+  await ensureTokensTableExists();
+  const tokens = await db.select().from(tokensTable).where(eq(tokensTable.token, token));
+  return tokens.length > 0 ? tokens[0].activated : null;
+}
+
+// Function to verify a token in the Tokens table
+export async function verifyToken(token: string) {
+  await ensureTokensTableExists();
+  const tokens = await db.select().from(tokensTable).where(eq(tokensTable.token, token));
+  return tokens.length > 0;
+}
+
+// Function to mark a token as used
+export async function markTokenAsUsed(token: string) {
+  await ensureTokensTableExists();
+  await db.update(tokensTable).set({ used: true }).where(eq(tokensTable.token, token));
 }
 
 // Function to ensure the Tokens table exists
@@ -75,13 +128,16 @@ async function ensureTokensTableExists() {
     );`;
 
   if (!result[0].exists) {
+    console.log("Creating Tokens table");
     await client`
       CREATE TABLE "Tokens" (
         id SERIAL PRIMARY KEY,
-        token VARCHAR(64),
+        token VARCHAR(64) UNIQUE,
         createdat TIMESTAMP,
         expiresat TIMESTAMP,
+        activated BOOLEAN,
         used BOOLEAN,
+        useremail VARCHAR(64),
         browser VARCHAR(10),
         os VARCHAR(10)
       );`;
@@ -91,10 +147,21 @@ async function ensureTokensTableExists() {
 // Tokens table definition
 const tokensTable = pgTable("Tokens", {
   id: serial("id").primaryKey(),
-  token: varchar("token", { length: 64 }),
+  token: varchar("token", { length: 64 }).unique(),
   createdat: timestamp("createdat"),
   expiresat: timestamp("expiresat"),
+  activated: boolean("activated"),
   used: boolean("used"),
+  useremail: varchar("useremail", { length: 64 }),
   browser: varchar("browser", { length: 10 }),
   os: varchar("os", { length: 10 }),
 });
+
+
+
+
+// add to env.local at the bottom
+
+//USER_EMAIL=your-email@example.com
+//USER_PASS=your-secure-password
+//RESEND_API_KEY=re_S2SyejmH_PxfmPEMPTbX95PN5bTzpAxms

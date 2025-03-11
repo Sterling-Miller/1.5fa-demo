@@ -13,6 +13,7 @@
       "@/styles/*": ["styles/*"]
     },
     "strict": true,
+    "typeRoots": ["./node_modules/@types", "./types"],
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
