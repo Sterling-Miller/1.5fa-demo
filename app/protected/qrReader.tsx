@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react";
 import QrScanner from "modern-react-qr-reader"; 
-import verifyToken from "./protected/verifyToken";
+import verifyToken from "./verifyToken";
 // Sourse Inspo: https://codesandbox.io/p/sandbox/qrscanner-854b39?file=%2Fsrc%2FApp.js%3A3%2C1-4%2C1
 
 const QRScanner = () => {

@@ -12,6 +12,7 @@ export const {
 } = NextAuth({
   ...authConfig,
   providers: [
+    // This is our method of authenticating with email and password
     Credentials({
       id: "credentials",
       async authorize({ email, password }: any) {
@@ -21,7 +22,7 @@ export const {
         if (passwordsMatch) return user[0] as any;
       },
     }),
-
+    // This is our method of authenticating with a QR code
     Credentials({
       id: "qr-token",
       async authorize({ ephemeralToken }: any) {

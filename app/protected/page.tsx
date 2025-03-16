@@ -1,8 +1,6 @@
 import { auth, signOut } from 'app/auth';
-import QRScanner from 'app/qrReader';
-import Navbar from '../navbar';
-import VerifyToken from './verifyToken';
-import { SessionProvider } from 'next-auth/react';
+import QRScanner from './qrReader';
+import Navbar from './navbar';
 
 export default async function ProtectedPage() {
   let session = await auth();
